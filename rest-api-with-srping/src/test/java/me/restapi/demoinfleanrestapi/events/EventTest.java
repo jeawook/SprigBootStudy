@@ -2,6 +2,7 @@ package me.restapi.demoinfleanrestapi.events;
 
 
 import junitparams.JUnitParamsRunner;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
@@ -11,14 +12,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JUnitParamsRunner.class)
 class EventTest {
 
-
+    @Test
     public void builder() {
         Event event = Event.builder()
                 .name("Inflearn Spring REST API")
                 .description("REST API development with Spring").build();
         assertThat(event).isNotNull();
     }
-
+    @Test
     public void javaBean() {
         //given
         String name = "Event";
@@ -31,7 +32,7 @@ class EventTest {
         assertThat(event.getName()).isEqualTo(name);
         assertThat(event.getDescription()).isEqualTo(description);
     }
-
+    @Test
     @ParameterizedTest
     @MethodSource("testFreeParams")
     public void testFree(int basePrice, int maxPrice, boolean isFree) {
@@ -47,7 +48,7 @@ class EventTest {
         assertThat(event.isFree()).isEqualTo(isFree);
 
     }
-
+    @Test
     private static Object[] testFreeParams() {
         return new Object[]{
                 new Object[]{0, 0, true},
@@ -55,7 +56,7 @@ class EventTest {
                 new Object[]{0, 100, false}
         };
     }
-
+    @Test
     @ParameterizedTest
     @MethodSource("testOfflineParams")
     public void testOffline(String location, boolean isOffline) {
@@ -69,7 +70,7 @@ class EventTest {
         // Then
         assertThat(event.isOffline()).isEqualTo(isOffline);
     }
-
+    @Test
     private static Object[] testOfflineParams() {
         return new Object[]{
                 new Object[]{"강남역 네이버 D2 스타트업 팩토리", true},
