@@ -51,7 +51,7 @@ public class EventController {
         URI createUri = selfLinkBuilder.toUri();
         EventResource eventResource = new EventResource(event);
         eventResource.add(linkTo(EventController.class).withRel("query-events"));
-        eventResource.add(selfLinkBuilder.withRel("update-events"));
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
         return ResponseEntity.created(createUri).body(eventResource);
     }
 
