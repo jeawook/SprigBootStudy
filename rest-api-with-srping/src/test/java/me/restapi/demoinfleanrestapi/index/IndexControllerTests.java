@@ -1,27 +1,13 @@
 package me.restapi.demoinfleanrestapi.index;
 
+import me.restapi.demoinfleanrestapi.common.BaseControllerTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class IndexControllerTests {
-
-    @Autowired
-    MockMvc mockMvc;
+public class IndexControllerTests extends BaseControllerTest {
 
     @Test
     public void index() throws Exception{
