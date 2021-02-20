@@ -2,6 +2,7 @@ package me.restapi.demoinfleanrestapi.events;
 
 
 import junitparams.JUnitParamsRunner;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -56,7 +57,7 @@ class EventTest {
         };
     }
     @ParameterizedTest
-    @MethodSource("testOfflineParams")
+    @DisplayName("testOfflineParams")
     public void testOffline(String location, boolean isOffline) {
         // Given
         Event event = Event.builder()
