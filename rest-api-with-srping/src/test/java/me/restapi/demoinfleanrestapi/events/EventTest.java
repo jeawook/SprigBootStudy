@@ -57,7 +57,7 @@ class EventTest {
         };
     }
     @ParameterizedTest
-    @DisplayName("testOfflineParams")
+    @MethodSource("testOfflineParams")
     public void testOffline(String location, boolean isOffline) {
         // Given
         Event event = Event.builder()
