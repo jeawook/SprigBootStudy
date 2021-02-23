@@ -1,6 +1,7 @@
 package me.restapi.demoinfleanrestapi.config;
 
 import me.restapi.demoinfleanrestapi.accounts.Account;
+import me.restapi.demoinfleanrestapi.accounts.AccountRepository;
 import me.restapi.demoinfleanrestapi.accounts.AccountRole;
 import me.restapi.demoinfleanrestapi.accounts.AccountService;
 import org.modelmapper.ModelMapper;
@@ -30,16 +31,28 @@ public class AppConfig {
     @Bean
     public ApplicationRunner applicationRunner() {
         return new ApplicationRunner() {
+
             @Autowired
             AccountService accountService;
+
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account jwpark = Account.builder()
-                        .email("pdj13579@nate.com")
-                        .password("jwpark")
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                         .build();
-                accountService.saveAccount(jwpark);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
+                        .build();
+                accountService.saveAccount(user);
 
             }
         };

@@ -1,8 +1,6 @@
 package me.restapi.demoinfleanrestapi.accounts;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -28,7 +27,7 @@ public class AccountServiceTest {
     @Test
     public void findByUserName() {
         // Given
-        String username = "pdj13579@nate.com";
+        String username = "pdj@nate.com";
         String password = "jaewook";
         Account account = Account.builder()
                 .email(username)
