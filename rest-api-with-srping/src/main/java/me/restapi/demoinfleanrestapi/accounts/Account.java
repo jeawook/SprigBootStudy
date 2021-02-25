@@ -1,6 +1,7 @@
 package me.restapi.demoinfleanrestapi.accounts;
 
 import lombok.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;

@@ -1,16 +1,19 @@
 package me.restapi.demoinfleanrestapi.events;
 
+import me.restapi.demoinfleanrestapi.accounts.Account;
+import me.restapi.demoinfleanrestapi.accounts.AccountAdapter;
+import me.restapi.demoinfleanrestapi.accounts.CurrentUser;
 import me.restapi.demoinfleanrestapi.common.ErrorResource;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +40,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDTO eventDTO, Errors errors) {
+    public ResponseEntity createEvent(@RequestBody @Valid EventDTO eventDTO, Errors errors,@CurrentUser Account currentUser) {
         if (errors.hasErrors()) {
             return badRequest(errors);
         }
@@ -49,6 +52,7 @@ public class EventController {
 
         Event event = modelMapper.map(eventDTO, Event.class);
         event.update();
+        event.setManager(currentUser);
         Event newEvent = eventRepository.save(event);
         WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
         URI createUri = selfLinkBuilder.toUri();
@@ -60,15 +64,18 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler, @CurrentUser Account account) {
         Page<Event> page = this.eventRepository.findAll(pageable);
         var pagedResources = assembler.toModel(page, e -> new EventResource(e));
         pagedResources.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
+        if (account != null) {
+            pagedResources.add(linkTo(EventController.class).withRel("create-event"));
+        }
         return ResponseEntity.ok(pagedResources);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getEvent(@PathVariable Integer id) {
+    public ResponseEntity getEvent(@PathVariable Integer id, @CurrentUser Account currentUser) {
         Optional<Event> optionalEvent = this.eventRepository.findById(id);
         if (optionalEvent.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -76,10 +83,13 @@ public class EventController {
         Event event = optionalEvent.get();
         EventResource eventResource = new EventResource(event);
         eventResource.add(new Link("/docs/index.html#resources-events-get").withRel("profile"));
+        if (event.getManager().equals(currentUser)) {
+            eventResource.add(linkTo(EventController.class).slash(event.getId()).withRel("update-event"));
+        }
         return ResponseEntity.ok(eventResource);
     }
     @PutMapping("/{id}")
-    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDTO eventDTO, Errors errors) {
+    public ResponseEntity updateEvent(@PathVariable Integer id, @RequestBody @Valid EventDTO eventDTO, Errors errors, @CurrentUser Account currentUser) {
 
         Optional<Event> optionalEvent = this.eventRepository.findById(id);
         if (optionalEvent.isEmpty()) {
@@ -93,6 +103,10 @@ public class EventController {
             return badRequest(errors);
         }
         Event existingEvent = optionalEvent.get();
+        if (!existingEvent.getManager().equals(currentUser)) {
+            return new  ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
         this.modelMapper.map(eventDTO, existingEvent);
         Event savedEvent = this.eventRepository.save(existingEvent);
 
