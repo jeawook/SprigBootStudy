@@ -1,5 +1,6 @@
 package study.datajpa.repository;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ class MemberJpaRepositoryTest {
     }
 
     @Test
+    @DisplayName("기본 생성 삭제")
     public void basicCRUD() {
         Member member1 = new Member("member1");
         Member member2 = new Member("member2");
