@@ -104,7 +104,7 @@ public class EventController {
         }
         Event existingEvent = optionalEvent.get();
         if (!existingEvent.getManager().equals(currentUser)) {
-            return new  ResponseEntity(HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         this.modelMapper.map(eventDTO, existingEvent);
