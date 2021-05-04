@@ -288,6 +288,7 @@ public class EventControllerTests extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(get("/api/events/{id}", event.getId()))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").exists())
                 .andExpect(jsonPath("id").exists())

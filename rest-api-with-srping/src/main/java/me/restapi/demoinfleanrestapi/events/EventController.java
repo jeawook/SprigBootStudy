@@ -66,7 +66,7 @@ public class EventController {
     @GetMapping
     public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler, @CurrentUser Account account) {
         Page<Event> page = this.eventRepository.findAll(pageable);
-        var pagedResources = assembler.toModel(page, e -> new EventResource(e));
+        var pagedResources = assembler.toModel(page, EventResource::new);
         pagedResources.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
         if (account != null) {
             pagedResources.add(linkTo(EventController.class).withRel("create-event"));
