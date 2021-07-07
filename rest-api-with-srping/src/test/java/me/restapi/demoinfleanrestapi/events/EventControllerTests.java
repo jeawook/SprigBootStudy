@@ -201,6 +201,7 @@ public class EventControllerTests extends BaseControllerTest {
                     .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(this.objectMapper.writeValueAsString(eventDTO)))
+                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
     @Test
@@ -287,6 +288,7 @@ public class EventControllerTests extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(get("/api/events/{id}", event.getId()))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").exists())
                 .andExpect(jsonPath("id").exists())
@@ -300,6 +302,7 @@ public class EventControllerTests extends BaseControllerTest {
     public void getEvent404() throws Exception {
         // When & Then
         this.mockMvc.perform(get("/api/events/1123"))
+                .andDo(print())
                 .andExpect(status().isNotFound());
     }
 

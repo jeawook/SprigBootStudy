@@ -66,7 +66,7 @@ public class EventController {
     @GetMapping
     public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler, @CurrentUser Account account) {
         Page<Event> page = this.eventRepository.findAll(pageable);
-        var pagedResources = assembler.toModel(page, e -> new EventResource(e));
+        var pagedResources = assembler.toModel(page, EventResource::new);
         pagedResources.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
         if (account != null) {
             pagedResources.add(linkTo(EventController.class).withRel("create-event"));
@@ -104,7 +104,7 @@ public class EventController {
         }
         Event existingEvent = optionalEvent.get();
         if (!existingEvent.getManager().equals(currentUser)) {
-            return new  ResponseEntity(HttpStatus.FORBIDDEN);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         this.modelMapper.map(eventDTO, existingEvent);
