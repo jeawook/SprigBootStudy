@@ -41,12 +41,16 @@ public class FrontControllerV5 extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         Object handler = getHandler(request);
+
         if (handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+
         MyHandlerAdapter adapter = getHandlerAdapter(handler);
+
 
         ModelView mv = adapter.handle(request, response, handler);
 
