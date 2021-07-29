@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -35,33 +33,63 @@ public class BasicItemController {
         return "basic/item";
     }
 
+    @GetMapping("/add")
+    public String addFrom() {
+        return "basic/addForm";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName, @RequestParam int price, @RequestParam int quantity, Model model) {
+        Item item = new Item(itemName, price, quantity);
+        itemRepository.save(item);
+        model.addAttribute("item", item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item, Model model) {
+        itemRepository.save(item);
+//        model.addAttribute("item", item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV4(Item item) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV5(Item item) {
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId();
+    }
+
+    @PostMapping("/add")
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+        itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", item.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";
+    }
+
     @GetMapping("/{itemId}/edit")
-    public String updateForm(@PathVariable long itemId,Model model) {
+    public String editForm(@PathVariable long itemId,Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "basic/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String update(@PathVariable long itemId,Item item, Model model) {
-        Item findItem = itemRepository.findById(itemId);
-        findItem.setItemName(item.getItemName());
-        findItem.setPrice(item.getPrice());
-        findItem.setQuantity(item.getQuantity());
-        model.addAttribute("item", findItem);
-        return "basic/item";
-    }
-
-    @GetMapping("/add")
-    public String addItem() {
-        return "basic/addForm";
-    }
-
-    @PostMapping("/add")
-    public String addItem(Item item, Model model) {
-        Item savedItem = itemRepository.save(item);
-        model.addAttribute("item", savedItem);
-        return "basic/item";
+    public String edit(@PathVariable long itemId,Item item) {
+        itemRepository.update(itemId, item);
+        return "redirect:/basic/items/{itemId}";
     }
 
     /**
