@@ -93,7 +93,7 @@ public class QuerydslBasicTest {
         Member findMember = queryFactory
                 .selectFrom(member)
                 .where(member.username.eq("member1")
-                        .and(member.age.between(10, 30)))
+                        .and(member.age.between(null, 10)))
                 .fetchOne();
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
